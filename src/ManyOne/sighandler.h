@@ -1,0 +1,29 @@
+
+#include <signal.h>
+#define RED "\033[1;31m"
+#define RESET "\033[0m"
+#define GREEN "\e[0;32m"
+#define BLUE "\033[1;34m"
+
+/**
+ * @brief TCB of current running process 
+ */
+extern tcb *__curproc;
+
+/**
+ * @brief Default signal handlers for signals sent via thread_kill()
+ * 
+ * @param signum Signal number to be sent
+ */
+void TLIB_SIG_HANDLER(int signum)
+{
+    printf(RED "Dispatched Signal\n" RESET);
+    printf("Thread tid %ld handled signal\n", __curproc->tid);
+}
+
+#define WRAP_SIGNALS                   \
+    signal(SIGTERM, TLIB_SIG_HANDLER); \
+    signal(SIGFPE, TLIB_SIG_HANDLER);  \
+    signal(SIGSYS, TLIB_SIG_HANDLER);  \
+    signal(SIGPIPE, TLIB_SIG_HANDLER); \
+    signal(SIGABRT, TLIB_SIG_HANDLER);
